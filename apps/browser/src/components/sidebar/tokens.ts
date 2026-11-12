@@ -1,6 +1,6 @@
 import { useTheme } from "../ui/theme";
 import { duration } from "../ui/motion";
-import { font, ink, shadow, withAlpha, type ShadowLevel } from "../ui/tokens";
+import { ink, shadow, withAlpha, type ShadowLevel } from "../ui/tokens";
 import type { GroupColor } from "../../state/browser/types";
 import { GROUP_COLORS } from "../../state/groups/tokens";
 
@@ -89,8 +89,6 @@ export const TILE_STATUS = { pip: 8, speaker: 9.5, box: { width: 14, height: 12 
 export const AWAY_TITLE = { slashAlpha: 0.45, slashGap: 4, pinnedMaxWidth: "45%" } as const;
 
 export const TABULAR_NUMS: ("tabular-nums")[] = ["tabular-nums"];
-
-export const SIDEBAR_TYPE = { compact: font.small.fontSize } as const;
 
 export function groupTint(color: GroupColor | null | undefined): string | null {
   return color && color !== "none" ? (GROUP_COLORS[color]?.hex ?? null) : null;

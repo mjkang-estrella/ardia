@@ -17,6 +17,7 @@ import type { StateCreator } from "zustand";
 import { fromLegacyUrl } from "../../lib/legacy";
 import type { BrowserState } from "../browser/store";
 import { DEFAULT_SIDEBAR_WIDTH, PAGE_FRAME, validPageFrame } from "../../lib/windowLayout";
+import { SIDEBAR_SCALE, SIDEBAR_SCALES, validSidebarScale } from "../../lib/sidebarMetrics";
 import { isFields, isString, isStringList } from "../../lib/decode";
 import type { SavedObject } from "../../lib/savedDocument";
 import type { JsonSchema } from "../../lib/jsonSchema";
@@ -107,6 +108,7 @@ export const SETTING_SPECS = {
   videoUpscaling: flag(true, SYNCED),
   sidebarMediaControls: flag(true, SYNCED),
   sidebarWidth: width(DEFAULT_SIDEBAR_WIDTH),
+  sidebarScale: shaped<number>(SIDEBAR_SCALE.default, validSidebarScale, { type: "integer", enum: SIDEBAR_SCALES }, SYNCED),
   showSidebarButton: flag(true, SYNCED),
   showClearButton: flag(true, SYNCED),
   balancedTopApps: flag(false, SYNCED),

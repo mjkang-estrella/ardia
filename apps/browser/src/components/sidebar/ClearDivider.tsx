@@ -1,8 +1,8 @@
 import { memo, useState } from "react";
 import { Animated, Pressable, View } from "react-native";
 import { useTheme } from "../ui/theme";
-import { ContextMenuArea, Divider, space, Symbol, Text, useHover } from "../ui";
-import { TAB_ROW } from "./tokens";
+import { ContextMenuArea, Divider, Symbol, Text, useHover } from "../ui";
+import { useSidebarScale } from "./scale";
 import { HoverSlot } from "../ui/HoverSlot";
 import { closeAllTabs } from "../../state/sidebar/clearTabs";
 import { tidyPins } from "../../state/sidebar/tidyPinsUi";
@@ -11,8 +11,9 @@ import { PINNED_FOLD_TITLES, togglePinnedFold } from "../../state/sidebar/pinned
 
 const DIA_DIVIDER_SIDE = 6.5;
 const CLEAR_DIVIDER_HEIGHT = 2 * DIA_DIVIDER_SIDE + 1;
-const PADDING = TAB_ROW.contentLeft;
-const ACTIONS_DIVIDER = { marginLeft: space.m } as const;
+const ACTION_DIVIDER_LENGTH = 9;
+const CHEVRON = { box: 10, glyph: 8 } as const;
+const ACTION_GLYPH = { size: 9, height: 11 } as const;
 
 type PinnedFold = { collapsed: boolean; open: Animated.Value };
 
@@ -20,6 +21,8 @@ type DividerProps = { windowId: string; profileId: string; lift: number; clear: 
 
 export const ClearDivider = memo(function ClearDivider({ windowId, profileId, lift, clear, tidy, pinned }: DividerProps) {
   const theme = useTheme();
+  const m = useSidebarScale();
+  const padding = m.tabRow.contentLeft;
   const { hovered: shown, hoverProps } = useHover();
   const [lineWidth, setLineWidth] = useState(0);
   const foldShown = !!pinned && (shown || pinned.collapsed);
@@ -28,14 +31,14 @@ export const ClearDivider = memo(function ClearDivider({ windowId, profileId, li
     <ContextMenuArea onContextMenu={() => void openSidebarMenu(windowId)}>
       <View
         {...hoverProps}
-        onLayout={(e) => setLineWidth(Math.max(0, e.nativeEvent.layout.width - 2 * PADDING))}
+        onLayout={(e) => setLineWidth(Math.max(0, e.nativeEvent.layout.width - 2 * padding))}
         style={{
-          height: CLEAR_DIVIDER_HEIGHT,
+          height: m.px(CLEAR_DIVIDER_HEIGHT),
           marginTop: -lift,
           flexDirection: "row",
           alignItems: "center",
-          paddingLeft: PADDING,
-          paddingRight: PADDING,
+          paddingLeft: padding,
+          paddingRight: padding,
         }}
       >
         {pinned ? <HoverSlot hovered={foldShown} width="content" reserve="hover" align="start" hover={<FoldButton pinned={pinned} onPress={() => togglePinnedFold(profileId)} />} /> : null}
@@ -51,9 +54,9 @@ export const ClearDivider = memo(function ClearDivider({ windowId, profileId, li
             reserve="hover"
             hover={
               <>
-                {tidy ? <DividerButton title="Tidy" symbol="sparkles" iconWidth={10} label="Tidy pinned tabs" onPress={() => tidyPins(windowId, profileId)} /> : null}
-                {tidy && clear ? <Divider vertical thick length={9} style={ACTIONS_DIVIDER} /> : null}
-                {clear ? <DividerButton title="Clear" symbol="arrow.down" iconWidth={8} label="Clear unpinned tabs" onPress={() => closeAllTabs(windowId)} /> : null}
+                {tidy ? <DividerButton title="Tidy" symbol="sparkles" iconWidth={m.px(10)} label="Tidy pinned tabs" onPress={() => tidyPins(windowId, profileId)} /> : null}
+                {tidy && clear ? <Divider vertical thick length={m.px(ACTION_DIVIDER_LENGTH)} style={{ marginLeft: m.space.m }} /> : null}
+                {clear ? <DividerButton title="Clear" symbol="arrow.down" iconWidth={m.px(8)} label="Clear unpinned tabs" onPress={() => closeAllTabs(windowId)} /> : null}
               </>
             }
           />
@@ -65,6 +68,7 @@ export const ClearDivider = memo(function ClearDivider({ windowId, profileId, li
 
 function FoldButton({ pinned, onPress }: { pinned: PinnedFold; onPress: () => void }) {
   const theme = useTheme();
+  const m = useSidebarScale();
   const { hovered, hoverProps } = useHover();
   const label = pinned.collapsed ? PINNED_FOLD_TITLES.expand : PINNED_FOLD_TITLES.collapse;
   const rotate = pinned.open.interpolate({ inputRange: [0, 1], outputRange: ["-90deg", "0deg"] });
@@ -74,11 +78,11 @@ function FoldButton({ pinned, onPress }: { pinned: PinnedFold; onPress: () => vo
         {({ pressed }) => {
           const color = pressed ? theme.textSecondary : hovered ? theme.textPrimary : theme.textTertiary;
           return (
-            <View style={{ height: CLEAR_DIVIDER_HEIGHT, flexDirection: "row", alignItems: "center", paddingRight: space.m }}>
-              <Animated.View style={{ width: 10, height: 10, marginRight: space.xs, alignItems: "center", justifyContent: "center", transform: [{ rotate }] }}>
-                <Symbol name="chevron.down" size={8} weight="semibold" color={color} style={{ width: 10, height: 10 }} />
+            <View style={{ height: m.px(CLEAR_DIVIDER_HEIGHT), flexDirection: "row", alignItems: "center", paddingRight: m.space.m }}>
+              <Animated.View style={{ width: m.px(CHEVRON.box), height: m.px(CHEVRON.box), marginRight: m.space.xs, alignItems: "center", justifyContent: "center", transform: [{ rotate }] }}>
+                <Symbol name="chevron.down" size={m.px(CHEVRON.glyph)} weight="semibold" color={color} style={{ width: m.px(CHEVRON.box), height: m.px(CHEVRON.box) }} />
               </Animated.View>
-              <Text size="tiny" weight="medium" color={color}>
+              <Text size="tiny" weight="medium" color={color} style={{ fontSize: m.font.tiny }}>
                 Pinned
               </Text>
             </View>
@@ -91,6 +95,7 @@ function FoldButton({ pinned, onPress }: { pinned: PinnedFold; onPress: () => vo
 
 function DividerButton({ title, symbol, iconWidth, label, onPress }: { title: string; symbol: string; iconWidth: number; label: string; onPress: () => void }) {
   const theme = useTheme();
+  const m = useSidebarScale();
   const { hovered, hoverProps } = useHover();
   return (
     <View {...hoverProps}>
@@ -98,9 +103,9 @@ function DividerButton({ title, symbol, iconWidth, label, onPress }: { title: st
         {({ pressed }) => {
           const color = pressed ? theme.textSecondary : hovered ? theme.textPrimary : theme.textTertiary;
           return (
-            <View style={{ height: CLEAR_DIVIDER_HEIGHT, flexDirection: "row", alignItems: "center", paddingLeft: space.m }}>
-              <Symbol name={symbol} size={9} weight="semibold" color={color} style={{ width: iconWidth, height: 11, marginRight: space.xs }} />
-              <Text size="tiny" weight="medium" color={color}>
+            <View style={{ height: m.px(CLEAR_DIVIDER_HEIGHT), flexDirection: "row", alignItems: "center", paddingLeft: m.space.m }}>
+              <Symbol name={symbol} size={m.px(ACTION_GLYPH.size)} weight="semibold" color={color} style={{ width: iconWidth, height: m.px(ACTION_GLYPH.height), marginRight: m.space.xs }} />
+              <Text size="tiny" weight="medium" color={color} style={{ fontSize: m.font.tiny }}>
                 {title}
               </Text>
             </View>

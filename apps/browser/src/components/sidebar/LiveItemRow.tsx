@@ -9,9 +9,9 @@ import type { CompletedItem, LiveItem } from "../../state/live/types";
 import { usePageProfileId } from "../../state/browser/hooks";
 import { useIsActiveIn, useLiveItemTab, useTabAwayFromPin } from "../../state/sidebar/hooks";
 import { HoverSlot } from "../ui/HoverSlot";
-import { Badge, Button, ContextMenuArea, Dot, hairline, ink, space, Symbol, Text, useHover } from "../ui";
+import { Badge, Button, ContextMenuArea, Dot, hairline, ink, Symbol, Text, useHover } from "../ui";
 import { curve, springs } from "../ui/motion";
-import { layout, useTheme } from "../ui/theme";
+import { useTheme } from "../ui/theme";
 import { useLiveColors, type LiveColors } from "../live/tokens";
 import { modifiersOf } from "../../lib/keys";
 import { dismissHover } from "../../state/sidebar/hover";
@@ -20,14 +20,16 @@ import { openLiveItemMenu } from "../../state/sidebar/liveMenus";
 import { registerRow } from "../../state/sidebar/sidebarUi";
 import { withShortcut } from "../../state/commands/commandShortcuts";
 import { TabIcon } from "./TabIcon";
-import { SIDEBAR_MOTION, sidebarTokens, TAB_ROW } from "./tokens";
+import { SIDEBAR_MOTION, sidebarTokens } from "./tokens";
+import { useSidebarScale } from "./scale";
 import { useSidebarRowLook } from "./rowLook";
 import { SidebarRowLabel, SidebarRowSurface } from "./SidebarRow";
 
 const liveRowKey = (folderId: string, itemId: string) => `live|${folderId}|${itemId}`;
 
 export function LiveItemRow({ folderId, item, windowId, inStack = false }: { folderId: string; item: LiveItem; windowId: string; inStack?: boolean }) {
-  const indent = inStack ? STACK_INDENT : 0;
+  const m = useSidebarScale();
+  const indent = inStack ? m.px(STACK_INDENT) : 0;
   const theme = useTheme();
   const { closeTabHint: closeHint, backToPinHint } = useSidebarRowLook();
   const backToPin = useHover();
@@ -54,7 +56,7 @@ export function LiveItemRow({ folderId, item, windowId, inStack = false }: { fol
   const resetting = resettable && backToPin.hovered;
 
   return (
-    <Animated.View style={completion ? { height: fold.interpolate({ inputRange: [0, 1], outputRange: [0, layout.rowHeight] }), opacity: fold, overflow: "hidden" } : null}>
+    <Animated.View style={completion ? { height: fold.interpolate({ inputRange: [0, 1], outputRange: [0, m.rowHeight] }), opacity: fold, overflow: "hidden" } : null}>
       <View ref={(v) => registerRow(windowId, key, v)} {...hoverProps}>
         <ContextMenuArea
           onContextMenu={() => {
@@ -69,8 +71,8 @@ export function LiveItemRow({ folderId, item, windowId, inStack = false }: { fol
             }}
           >
             {({ pressed }) => (
-              <SidebarRowSurface fill={!active && pressed ? theme.tabPressed : fill} selected={active} border={active ? 1 : 0} padLeft={TAB_ROW.contentLeft + indent}>
-                {unread ? <Dot size={5} color={theme.accent} style={{ position: "absolute", left: UNREAD_DOT_LEFT + indent }} /> : null}
+              <SidebarRowSurface fill={!active && pressed ? theme.tabPressed : fill} selected={active} border={active ? 1 : 0} padLeft={m.tabRow.contentLeft + indent}>
+                {unread ? <Dot size={m.px(UNREAD_DOT)} color={theme.accent} style={{ position: "absolute", left: m.px(UNREAD_DOT_LEFT) + indent }} /> : null}
                 <View {...backToPin.hoverProps}>
                   {resettable ? (
                     <Pressable
@@ -80,7 +82,7 @@ export function LiveItemRow({ folderId, item, windowId, inStack = false }: { fol
                       accessibilityLabel="Back to Pinned URL"
                     >
                       {resetting ? (
-                        <Symbol name="arrow.uturn.backward" size={11} weight="semibold" color={active ? theme.rowSelectedText : theme.textTab} style={{ width: 16, height: 16 }} />
+                        <Symbol name="arrow.uturn.backward" size={m.glyph.s} weight="semibold" color={active ? theme.rowSelectedText : theme.textTab} style={{ width: m.icon, height: m.icon }} />
                       ) : (
                         <ItemIcon item={item} completion={completion} colors={colors} />
                       )}
@@ -98,7 +100,8 @@ export function LiveItemRow({ folderId, item, windowId, inStack = false }: { fol
                 <HoverSlot
                   hovered={hovered && !!tabId && !completion}
                   reserve={inStack && item.pr?.stack ? "always" : "hover"}
-                  hover={<Button variant="icon" icon="xmark" size="s" weight="semibold" onPress={() => tabId && void closeTab(tabId)} tooltip={withShortcut("Close Tab", closeHint)} />}
+                  width={m.rowButton.box}
+                  hover={<Button variant="icon" icon="xmark" box={m.rowButton.box} glyph={m.rowButton.glyph} weight="semibold" onPress={() => tabId && void closeTab(tabId)} tooltip={withShortcut("Close Tab", closeHint)} />}
                 >
                   <Trailing item={item} completion={completion} colors={colors} />
                 </HoverSlot>
@@ -111,13 +114,15 @@ export function LiveItemRow({ folderId, item, windowId, inStack = false }: { fol
   );
 }
 
+const UNREAD_DOT = 5;
 const UNREAD_DOT_LEFT = 2;
 const STACK_INDENT = 10;
-const POSITION_CHIP = { marginLeft: space.xs } as const;
+const ITEM_GLYPH = { completion: 14, pullRequest: 12, badge: 11, dot: 7 } as const;
 
 function PositionChip({ position }: { position: number }) {
+  const m = useSidebarScale();
   return (
-    <View style={POSITION_CHIP}>
+    <View style={{ marginLeft: m.space.xs }}>
       <Badge text={position} tone="chip" size="m" />
     </View>
   );
@@ -130,6 +135,7 @@ export const COMPLETION_GLYPH: Record<CompletedItem["state"], { symbol: string; 
 };
 
 function ItemIcon({ item, completion, colors }: { item: LiveItem; completion: CompletedItem["state"] | null; colors: LiveColors }) {
+  const m = useSidebarScale();
   const pop = useRef(new Animated.Value(completion ? 0 : 1)).current;
   useEffect(() => {
     if (!completion) return;
@@ -139,16 +145,16 @@ function ItemIcon({ item, completion, colors }: { item: LiveItem; completion: Co
   if (completion) {
     const glyph = COMPLETION_GLYPH[completion];
     return (
-      <Animated.View style={{ width: 16, height: 16, alignItems: "center", justifyContent: "center", transform: [{ scale: pop.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }) }] }}>
-        <Symbol name={glyph.symbol} size={14} weight="semibold" color={colors[glyph.color]} style={{ width: 16, height: 16 }} />
+      <Animated.View style={{ width: m.icon, height: m.icon, alignItems: "center", justifyContent: "center", transform: [{ scale: pop.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }) }] }}>
+        <Symbol name={glyph.symbol} size={m.px(ITEM_GLYPH.completion)} weight="semibold" color={colors[glyph.color]} style={{ width: m.icon, height: m.icon }} />
       </Animated.View>
     );
   }
   if (item.pr) {
-    return <Symbol name="arrow.triangle.pull" size={12} weight="semibold" color={item.pr.draft ? colors.draft : colors.success} style={{ width: 16, height: 16 }} />;
+    return <Symbol name="arrow.triangle.pull" size={m.px(ITEM_GLYPH.pullRequest)} weight="semibold" color={item.pr.draft ? colors.draft : colors.success} style={{ width: m.icon, height: m.icon }} />;
   }
-  if (item.icon && /^https?:/.test(item.icon)) return <TabIcon url={item.url} favicon={item.icon} direct />;
-  return <TabIcon url={item.source === "confluence" && !item.icon ? SOURCES.confluence.site : item.url} icon={item.icon} />;
+  if (item.icon && /^https?:/.test(item.icon)) return <TabIcon url={item.url} favicon={item.icon} direct size={m.icon} />;
+  return <TabIcon url={item.source === "confluence" && !item.icon ? SOURCES.confluence.site : item.url} icon={item.icon} size={m.icon} />;
 }
 
 const BADGES: Record<NonNullable<ReturnType<typeof prBadge>>, { symbol: string | null; color: keyof LiveColors; tip: string }> = {
@@ -160,13 +166,12 @@ const BADGES: Record<NonNullable<ReturnType<typeof prBadge>>, { symbol: string |
   passed: { symbol: "checkmark", color: "success", tip: "All checks have passed" },
 };
 
-const COMPLETION_LABEL = { marginRight: space.xs } as const;
-
 function Trailing({ item, completion, colors }: { item: LiveItem; completion: CompletedItem["state"] | null; colors: LiveColors }): ReactNode {
   const theme = useTheme();
+  const m = useSidebarScale();
   if (completion) {
     return (
-      <Text size="caption" weight="medium" color={colors[COMPLETION_GLYPH[completion].color]} style={COMPLETION_LABEL}>
+      <Text size="caption" weight="medium" color={colors[COMPLETION_GLYPH[completion].color]} style={{ fontSize: m.font.caption, marginRight: m.space.xs }}>
         {completion === "merged" ? "Merged" : completion === "reviewed" ? "Reviewed" : "Closed"}
       </Text>
     );
@@ -175,11 +180,11 @@ function Trailing({ item, completion, colors }: { item: LiveItem; completion: Co
   if (!badge) return null;
   const spec = BADGES[badge];
   return (
-    <View tooltip={spec.tip} style={{ width: TAB_ROW.closeSlot, height: TAB_ROW.closeSlot, alignItems: "center", justifyContent: "center" }}>
+    <View tooltip={spec.tip} style={{ width: m.tabRow.closeSlot, height: m.tabRow.closeSlot, alignItems: "center", justifyContent: "center" }}>
       {spec.symbol ? (
-        <Symbol name={spec.symbol} size={11} weight="semibold" color={colors[spec.color]} style={{ width: 16, height: 16 }} />
+        <Symbol name={spec.symbol} size={m.px(ITEM_GLYPH.badge)} weight="semibold" color={colors[spec.color]} style={{ width: m.icon, height: m.icon }} />
       ) : (
-        <Dot size={7} color={colors[spec.color]} ring={sidebarTokens(theme).liveDotRing} ringWidth={hairline.ring} />
+        <Dot size={m.px(ITEM_GLYPH.dot)} color={colors[spec.color]} ring={sidebarTokens(theme).liveDotRing} ringWidth={hairline.ring} />
       )}
     </View>
   );
