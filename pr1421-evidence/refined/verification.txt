@@ -1,0 +1,15 @@
+PR #1421 native refinement evidence
+Source: 538efd29441c2095588942ba7a9643a82ba20d28
+Base: 4bd77a5b4636bda7ec15976f8ee51d763b40d36e
+
+Apple Silicon, macOS 27.3, Xcode 27.2, Node 24, pnpm 11.1.3.
+Native Debug build passed with matching engine ee28c4b3a7d9.
+8 workspace typechecks and 167 focused unit/convention tests passed.
+16/16 native row, tile, nested-group and folder-panel checks passed at 80/120% in both address-bar layouts, including measured nested row heights.
+Sidebar scroll/drop suite: 6/6 at each endpoint.
+Hover suite: 3/3 at each endpoint, including sidebar, top tab strip and downloads.
+12/12 default-size native snapshots pixel-identical to unmodified main. Includes horizontal tabs, split rows, selected/collapsed groups and divider hover.
+Fixture captures cover live pull-request stacks, nested groups, WebKit badges and a template favicon at 80/90/100/120% in Classic/Glass.
+Independent source review found no blocking findings; 20 reviewer-selected tests passed.
+
+Limits: images are in-process native snapshots, with Chromium surfaces/native chrome omitted and imperfect opacity, not exact color comparisons. Folder-panel pass covers a short native gesture; the longer synthetic gesture ends early on unmodified main too. Rebased rename alignment, press animation and live hide-button clicks were source-reviewed, not fully re-exercised by the new native suite. Badge regression tests cover the medium badges used here; small/outline/ring variants are not separately tested.
