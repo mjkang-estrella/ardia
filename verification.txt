@@ -1,0 +1,21 @@
+PR https://github.com/ardia-browser/ardia/pull/1804
+Verified head 7091560c36c47cfe21b29b045e1a195854f3e05e
+macOS 27.3 (26C5035r), Apple Silicon arm64, Xcode 27.2 (27B52), Node 26.10.0.
+
+Result: the changed UI and both actions pass native verification in Classic and Glass.
+Native screenshots classic-native.png and glass-native.png show Manage aligned with Extensions and the tile grid. Settings captures show Extensions with Work selected.
+Fresh hidden instances used disposable profile data, with Personal and Work windows. Immediately before the click, the store's focus order named Personal first. AppKit mouse events targeted the actual Manage Extensions control in Work. Store subscriptions recorded panel closure before the settings navigation event, with pane extensions and profile work. The + tile closed the panel and created the Web Store tab in Work; Personal's tabs were unchanged.
+Evidence: classic-results.json, glass-results.json, classic.log, glass.log, verify.mjs, launch.mjs.
+
+Checks:
+- pnpm typecheck in apps/browser: passed.
+- node --no-warnings --import ./src/test-loader.mjs --test src/components/site/siteExtensionsManage.test.mjs src/components/settings/settingsSearch.test.mjs src/conventions.test.mjs: 36 passed.
+- pnpm test in apps/browser: 2480 passed, 1 failed, 0 skipped.
+- Existing failure: src/platform/pageScriptNativeShape.test.mjs:216, blockAutoplay is not defined. Reproduced independently using the test and page_script.js extracted from HEAD^; see base-failure.log.
+- git diff --check HEAD^ HEAD: passed.
+- Native build: succeeded with repository AdHoc.xcconfig and scripts/agent/build-app --as pr1804 --wait 120. See build.log.
+
+Build limitation: the exact base's prebuilt engine was unavailable. Used cached engine ee28c4b3a7d9 through ARDIACORE_FRAMEWORK. It is one engine commit behind, an unrelated Auto PiP visibility change, 6b1298ca. Thus this verifies the PR's UI on macOS, not a fully matching engine build. No engine or PR source was modified.
+Capture limitation: in-process Glass snapshots omit composited layers. The *-native.png files use WindowServer screencapture and were visually inspected instead.
+Initial reused-session attempts had input delivery failures; both final action checks passed in fresh instances. The panel was opened through the dev harness; the two tested actions used native mouse events, not direct calls to their handlers.
+The isolated test app and Metro were stopped. CocoaPods' incidental project formatting was reverted; checkout is clean. No GitHub comments, uploads, commits, or PR status changes were made.

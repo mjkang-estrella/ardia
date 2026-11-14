@@ -1,0 +1,45 @@
+✔ real queries put the setting people mean first (47.457583ms)
+✔ whole-word hits rank above word prefixes, and a loose keyword no longer wins (0.63325ms)
+✔ results that land on the same place collapse into one (8.879792ms)
+✔ rows named by the query stay apart even when they share a place (1.258625ms)
+✔ a pane's name finds that pane's rows (1.830084ms)
+✔ titles rank above keywords, keywords above descriptions (0.84775ms)
+✔ every word of the query has to match (1.051792ms)
+✔ garbage finds nothing (4.002ms)
+✔ short queries match word starts only (0.419208ms)
+✔ results come in one relevance order, not pane order (0.916875ms)
+✔ matches carry ranges to highlight, in the text shown (1.982417ms)
+✔ a long matching text shows the part around its match (0.090875ms)
+✔ every pane keeps a basic setting unless it hides whole (0.079292ms)
+✔ an empty query finds nothing (0.041875ms)
+✔ edit distance counts a swap as one edit (0.026875ms)
+✔ every indexed setting is anchored in its pane, and every anchor is indexed (1.426125ms)
+✔ every settings row with a fixed title is searchable (1.153ms)
+✔ a row its pane doesn't draw is left out of search, by the same rule the pane hides it with (0.482584ms)
+✔ panes leave showing and hiding an anchored row to the row's own rule (0.933417ms)
+✔ a one-letter query matches setting names, not sections or pane names (1.015417ms)
+✔ arrowing through results scrolls only as far as the selected row needs (4.513ms)
+✔ the Extensions header has a visible Manage button that closes the panel, then opens Settings › Extensions for the panel window's profile (5.810458ms)
+✔ the + tile still closes the panel and opens the Chrome Web Store in the panel's window (1.394041ms)
+✔ a closing JSX tag doesn't hide a comment after it (2.249625ms)
+✔ a closing JSX tag doesn't hide a colour after it (0.576333ms)
+✔ a transparent colour name counts as a colour literal, the word in copy doesn't (0.163042ms)
+✔ scale literals count outside token files, layout geometry and computed values don't (0.570208ms)
+✔ an import of a layer's own folder maps to that layer (0.164584ms)
+✔ a store is created curried, with no set/get creator (0.246834ms)
+✔ an interpolation after # in a string isn't a colour (0.187792ms)
+✔ a hex string interpolated after # is still a colour (0.098959ms)
+✔ a forward declaration of the engine's ArdiaCore classes isn't an app-side class (0.236125ms)
+✔ components neither write a store nor subscribe to the workspace store directly (0.112458ms)
+✔ components reach platform/ only through state, except the dev harness (0.264792ms)
+✔ only the engine's named environment reads are exempt (0.206666ms)
+✔ conventions hold, except what the baseline lists (488.039583ms)
+ℹ layout 0 files / 0, imports 0 files / 0, native-calls 0 files / 0, tokens 0 files / 0, scale 0 files / 0, get-state 0 files / 0, set-state 0 files / 0, store-reads 0 files / 0, store-shape 0 files / 0, size 0 files / 0, env 0 files / 0, naming 0 files / 0, comments 0 files / 0, file-names 0 files / 0
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 585.004125

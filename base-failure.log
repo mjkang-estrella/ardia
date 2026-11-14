@@ -1,0 +1,23 @@
+✔ Notification looks like Chrome's constructor and still shows Ardia's notification (1.568292ms)
+✔ showNotification: a tamper probe's new runs nothing, and what Chrome refuses gets Chrome's answer (0.20975ms)
+✔ showNotification without permission is refused by Chrome and shows nothing (1.618375ms)
+✖ play: a tamper probe's new runs nothing; a detached player is still watched; a stranger gets Chrome's answer (0.422084ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 82.453125
+
+✖ failing tests:
+
+test at ../pr1804-results/base/apps/browser/src/platform/pageScriptNativeShape.test.mjs:216:1
+✖ play: a tamper probe's new runs nothing; a detached player is still watched; a stranger gets Chrome's answer (0.422084ms)
+  ReferenceError [Error]: blockAutoplay is not defined
+      at eval (eval at mediaPage (file:///Users/mjkang/lab/pr1804-results/base/apps/browser/src/platform/pageScriptNativeShape.test.mjs:196:3), <anonymous>:29:18)
+      at Object.apply (eval at mediaPage (file:///Users/mjkang/lab/pr1804-results/base/apps/browser/src/platform/pageScriptNativeShape.test.mjs:196:3), <anonymous>:6:38)
+      at TestContext.<anonymous> (file:///Users/mjkang/lab/pr1804-results/base/apps/browser/src/platform/pageScriptNativeShape.test.mjs:225:18)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

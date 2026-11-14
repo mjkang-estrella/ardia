@@ -1,0 +1,106 @@
+[
+  {
+    "style": "classic",
+    "click": {
+      "firstResponder": "RenderWidgetHostViewCocoa",
+      "at": 751705695.1480417,
+      "firstResponderOnClick": "RenderWidgetHostViewCocoa",
+      "firstResponderAfter": "RenderWidgetHostViewCocoa",
+      "hit": "RCTTextView"
+    },
+    "result": {
+      "nav": {
+        "pane": "extensions",
+        "profileId": "work",
+        "detail": null,
+        "back": [
+          {
+            "pane": "general",
+            "profileId": null,
+            "detail": null
+          }
+        ],
+        "forward": []
+      },
+      "popover": null,
+      "events": [
+        {
+          "event": "panel",
+          "popover": null
+        },
+        {
+          "event": "settings",
+          "pane": "extensions",
+          "profile": "work",
+          "popover": null
+        }
+      ]
+    },
+    "addClick": {
+      "at": 751707324.2005833,
+      "firstResponder": "RenderWidgetHostViewCocoa",
+      "firstResponderOnClick": "RenderWidgetHostViewCocoa",
+      "hit": "RCTView",
+      "firstResponderAfter": "RenderWidgetHostViewCocoa"
+    },
+    "add": {
+      "popover": null,
+      "tabs": [
+        {
+          "windowId": "work",
+          "profileId": "work",
+          "url": "https://example.com/",
+          "title": "Example Domain",
+          "favicon": null,
+          "muted": false,
+          "zoom": 1,
+          "customTitle": null,
+          "customIcon": null,
+          "pinnedUrl": null,
+          "openerId": null,
+          "createdAt": 1,
+          "lastActiveAt": 1794681923843,
+          "id": "work-tab",
+          "page": {
+            "kind": "loaded",
+            "nav": {
+              "url": "https://example.com",
+              "seq": 1
+            }
+          },
+          "pin": null,
+          "engine": "chromium"
+        },
+        {
+          "id": "tab-mwgr9zl15nwz-1",
+          "windowId": "work",
+          "profileId": "work",
+          "url": "https://chromewebstore.google.com/category/extensions",
+          "title": "Chrome Web Store - Extensions",
+          "favicon": null,
+          "pin": null,
+          "muted": false,
+          "zoom": 1,
+          "customTitle": null,
+          "customIcon": null,
+          "pinnedUrl": null,
+          "openerId": null,
+          "page": {
+            "kind": "loaded",
+            "nav": {
+              "url": "https://chromewebstore.google.com/category/extensions",
+              "seq": 4,
+              "userInitiated": true
+            }
+          },
+          "createdAt": 1794681926857,
+          "lastActiveAt": 1794681926858,
+          "engine": "chromium"
+        }
+      ],
+      "personalTabs": [
+        "personal-tab"
+      ]
+    }
+  }
+]
